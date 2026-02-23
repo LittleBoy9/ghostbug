@@ -4,6 +4,14 @@
   "description": "Zero-config automatic bug context collector SDK for the browser",
   "author": "Sounak Das",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LittleBoy9/ghostbug.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LittleBoy9/ghostbug/issues"
+  },
+  "homepage": "https://github.com/LittleBoy9/ghostbug#readme",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
