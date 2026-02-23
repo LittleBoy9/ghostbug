@@ -1,4 +1,11 @@
-import type { BugReport, ErrorPayload, ConsolePayload, NetworkPayload } from '../types';
+import type {
+  BugReport,
+  ErrorPayload,
+  ConsolePayload,
+  NetworkPayload,
+  PerformancePayload,
+  MemoryPayload,
+} from '../types';
 import { VERSION } from '../constants';
 
 export function formatAsMarkdown(reports: BugReport[]): string {
@@ -58,11 +65,15 @@ function formatTitle(report: BugReport): string {
       return `Console ${report.payload.level}: ${report.payload.args[0] || ''}`;
     case 'network':
       return `${report.payload.method} ${report.payload.url} → ${report.payload.status}`;
+    case 'performance':
+      return `Performance: ${report.payload.metric} ${report.payload.value}ms`;
+    case 'memory':
+      return `Memory: ${report.payload.message}`;
   }
 }
 
 function formatPayload(
-  payload: ErrorPayload | ConsolePayload | NetworkPayload
+  payload: ErrorPayload | ConsolePayload | NetworkPayload | PerformancePayload | MemoryPayload
 ): string[] {
   const lines: string[] = [];
 
@@ -95,6 +106,25 @@ function formatPayload(
       lines.push(`- **URL:** ${payload.url}`);
       lines.push(`- **Status:** ${payload.status} ${payload.statusText}`);
       lines.push(`- **Duration:** ${payload.duration}ms`);
+      break;
+
+    case 'performance':
+      lines.push('### Performance Details');
+      lines.push('');
+      lines.push(`- **Metric:** ${payload.metric}`);
+      lines.push(`- **Value:** ${payload.value}ms`);
+      if (payload.entries.length > 0) {
+        lines.push(`- **Start Time:** ${Math.round(payload.entries[0].startTime)}ms`);
+      }
+      break;
+
+    case 'memory':
+      lines.push('### Memory Details');
+      lines.push('');
+      lines.push(`- **Used:** ${(payload.usedJSHeapSize / 1_048_576).toFixed(1)}MB`);
+      lines.push(`- **Limit:** ${(payload.jsHeapSizeLimit / 1_048_576).toFixed(1)}MB`);
+      lines.push(`- **Usage:** ${(payload.heapUsagePercent * 100).toFixed(1)}%`);
+      lines.push(`- **Growth since init:** ${(payload.heapGrowthPercent * 100).toFixed(1)}%`);
       break;
   }
 

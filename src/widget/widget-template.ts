@@ -107,5 +107,9 @@ function getReportMessage(report: BugReport): string {
       return report.payload.args.join(', ');
     case 'network':
       return `${report.payload.method} ${report.payload.url} → ${report.payload.status}`;
+    case 'performance':
+      return `${report.payload.metric}: ${report.payload.value}ms`;
+    case 'memory':
+      return report.payload.message;
   }
 }

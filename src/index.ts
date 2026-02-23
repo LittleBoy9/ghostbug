@@ -15,6 +15,9 @@ import { ConsoleCollector } from './collectors/console-collector';
 import { NetworkCollector } from './collectors/network-collector';
 import { ClickCollector } from './collectors/click-collector';
 import { ContextCollector } from './collectors/context-collector';
+import { InteractionCollector } from './collectors/interaction-collector';
+import { PerformanceCollector } from './collectors/performance-collector';
+import { MemoryCollector } from './collectors/memory-collector';
 import { Widget } from './widget/widget';
 import { formatAsJSON } from './formatters/json-formatter';
 import { formatAsMarkdown } from './formatters/markdown-formatter';
@@ -25,11 +28,17 @@ let collectors: Collector[] = [];
 let widget: Widget | null = null;
 const bugCallbacks = new Set<BugCallback>();
 let initialized = false;
+let currentUser: Record<string, unknown> | undefined;
+let currentTags: Record<string, unknown> | undefined;
+
+type MergedOptions = Omit<Required<GhostbugOptions>, 'screenshotFn'> & {
+  screenshotFn?: () => Promise<string>;
+};
 
 function mergeOptions(
-  defaults: Required<GhostbugOptions>,
+  defaults: Omit<Required<GhostbugOptions>, 'screenshotFn'>,
   user?: GhostbugOptions
-): Required<GhostbugOptions> {
+): MergedOptions {
   if (!user) return { ...defaults };
 
   return {
@@ -41,6 +50,7 @@ function mergeOptions(
     rateLimit: { ...defaults.rateLimit, ...user.rateLimit } as Required<RateLimitConfig>,
     beforeReport: user.beforeReport ?? defaults.beforeReport,
     debug: user.debug ?? defaults.debug,
+    screenshotFn: user.screenshotFn,
   };
 }
 
@@ -53,13 +63,19 @@ export function init(options?: GhostbugOptions): void {
   const opts = mergeOptions(DEFAULT_OPTIONS, options);
 
   eventBus = new EventBus();
-  const contextCollector = new ContextCollector();
+  const contextCollector = new ContextCollector(() => ({
+    user: currentUser,
+    tags: currentTags,
+  }));
   reportManager = new ReportManager(eventBus, contextCollector, opts);
 
   if (opts.collectors.errors) collectors.push(new ErrorCollector(eventBus));
   if (opts.collectors.console) collectors.push(new ConsoleCollector(eventBus));
   if (opts.collectors.network) collectors.push(new NetworkCollector(eventBus));
   if (opts.collectors.clicks) collectors.push(new ClickCollector(eventBus, opts.maxClicks));
+  if (opts.collectors.interactions) collectors.push(new InteractionCollector(eventBus));
+  if (opts.collectors.performance) collectors.push(new PerformanceCollector(eventBus));
+  if (opts.collectors.memory) collectors.push(new MemoryCollector(eventBus));
   collectors.push(contextCollector);
 
   collectors.forEach((c) => c.setup());
@@ -120,6 +136,14 @@ export function onBug(callback: BugCallback): () => void {
   return () => bugCallbacks.delete(callback);
 }
 
+export function setUser(user: Record<string, unknown>): void {
+  currentUser = user;
+}
+
+export function setTags(tags: Record<string, unknown>): void {
+  currentTags = { ...currentTags, ...tags };
+}
+
 export function destroy(): void {
   widget?.unmount();
   widget = null;
@@ -134,6 +158,8 @@ export function destroy(): void {
   reportManager = null;
 
   bugCallbacks.clear();
+  currentUser = undefined;
+  currentTags = undefined;
   initialized = false;
 }
 
@@ -152,10 +178,13 @@ export type {
   ErrorPayload,
   ConsolePayload,
   NetworkPayload,
+  PerformancePayload,
+  PerformanceEntryData,
+  MemoryPayload,
   Breadcrumb,
   PageContext,
   ClickEntry,
 } from './types';
 
 // Default export for IIFE/script tag usage
-export default { init, getReports, download, toMarkdown, onBug, destroy };
+export default { init, getReports, download, toMarkdown, onBug, setUser, setTags, destroy };

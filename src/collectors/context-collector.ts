@@ -1,7 +1,14 @@
 import type { Collector, PageContext } from '../types';
 
+export type MetaGetter = () => {
+  user?: Record<string, unknown>;
+  tags?: Record<string, unknown>;
+};
+
 export class ContextCollector implements Collector {
   readonly name = 'context';
+
+  constructor(private getMeta?: MetaGetter) {}
 
   setup(): void {
     // No listeners needed — snapshot utility only
@@ -12,6 +19,7 @@ export class ContextCollector implements Collector {
   }
 
   snapshot(): PageContext {
+    const meta = this.getMeta?.();
     return {
       url: window.location.href,
       referrer: document.referrer,
@@ -33,6 +41,8 @@ export class ContextCollector implements Collector {
             totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
           }
         : undefined,
+      user: meta?.user,
+      tags: meta?.tags,
     };
   }
 }

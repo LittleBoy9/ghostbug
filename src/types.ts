@@ -19,6 +19,8 @@ export interface GhostbugOptions {
   beforeReport?: (report: BugReport) => BugReport | false | null;
   /** Enable SDK debug logging. Default: false */
   debug?: boolean;
+  /** Async function that returns a screenshot data URL. Called on each new bug report. */
+  screenshotFn?: () => Promise<string>;
 }
 
 export interface CollectorToggle {
@@ -26,6 +28,9 @@ export interface CollectorToggle {
   console?: boolean;
   network?: boolean;
   clicks?: boolean;
+  interactions?: boolean;
+  performance?: boolean;
+  memory?: boolean;
 }
 
 export interface RateLimitConfig {
@@ -46,7 +51,7 @@ export interface WidgetOptions {
 // Bug Report Data Model
 // ──────────────────────────────────────────────
 
-export type BugReportType = 'error' | 'unhandled-rejection' | 'console' | 'network';
+export type BugReportType = 'error' | 'unhandled-rejection' | 'console' | 'network' | 'performance' | 'memory';
 
 export interface BugReport {
   id: string;
@@ -54,9 +59,10 @@ export interface BugReport {
   type: BugReportType;
   timestamp: string;
   count: number;
-  payload: ErrorPayload | ConsolePayload | NetworkPayload;
+  payload: ErrorPayload | ConsolePayload | NetworkPayload | PerformancePayload | MemoryPayload;
   breadcrumbs: Breadcrumb[];
   context: PageContext;
+  screenshot?: string;
 }
 
 // ──────────────────────────────────────────────
@@ -88,11 +94,43 @@ export interface NetworkPayload {
   duration: number;
 }
 
+export interface PerformancePayload {
+  kind: 'performance';
+  metric: string;
+  value: number;
+  entries: PerformanceEntryData[];
+}
+
+export interface PerformanceEntryData {
+  name: string;
+  duration: number;
+  startTime: number;
+}
+
+export interface MemoryPayload {
+  kind: 'memory';
+  message: string;
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+  heapUsagePercent: number;
+  heapGrowthPercent: number;
+}
+
 // ──────────────────────────────────────────────
 // Breadcrumbs
 // ──────────────────────────────────────────────
 
-export type BreadcrumbCategory = 'click' | 'navigation' | 'console' | 'network' | 'error';
+export type BreadcrumbCategory =
+  | 'click'
+  | 'navigation'
+  | 'console'
+  | 'network'
+  | 'error'
+  | 'interaction'
+  | 'visibility'
+  | 'performance'
+  | 'memory';
 
 export interface Breadcrumb {
   timestamp: string;
@@ -115,6 +153,8 @@ export interface PageContext {
   devicePixelRatio: number;
   timestamp: string;
   memory?: { usedJSHeapSize: number; totalJSHeapSize: number };
+  user?: Record<string, unknown>;
+  tags?: Record<string, unknown>;
 }
 
 // ──────────────────────────────────────────────
@@ -138,6 +178,8 @@ export type EventType =
   | 'console:captured'
   | 'network:captured'
   | 'click:captured'
+  | 'performance:captured'
+  | 'memory:captured'
   | 'report:created'
   | 'report:deduplicated'
   | 'breadcrumb:added';

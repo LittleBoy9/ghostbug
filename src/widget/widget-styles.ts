@@ -200,6 +200,16 @@ export const WIDGET_STYLES = `
     color: #1565c0;
   }
 
+  .gb-type-performance {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .gb-type-memory {
+    background: #f3e5f5;
+    color: #6a1b9a;
+  }
+
   .gb-report-message {
     font-size: 13px;
     color: #333;

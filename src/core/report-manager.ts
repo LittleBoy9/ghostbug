@@ -5,6 +5,8 @@ import type {
   ErrorPayload,
   ConsolePayload,
   NetworkPayload,
+  PerformancePayload,
+  MemoryPayload,
   GhostbugOptions,
 } from '../types';
 import { EventBus } from './event-bus';
@@ -13,6 +15,12 @@ import { RateLimiter } from './rate-limiter';
 import { ContextCollector } from '../collectors/context-collector';
 import { computeFingerprint } from '../utils/fingerprint';
 import { generateId } from '../utils/id';
+
+const SCREENSHOT_TIMEOUT_MS = 3000;
+
+type ReportManagerOptions = Omit<Required<GhostbugOptions>, 'screenshotFn'> & {
+  screenshotFn?: () => Promise<string>;
+};
 
 export class ReportManager {
   private reports: RingBuffer<BugReport>;
@@ -23,7 +31,7 @@ export class ReportManager {
   constructor(
     private eventBus: EventBus,
     private contextCollector: ContextCollector,
-    private options: Required<GhostbugOptions>
+    private options: ReportManagerOptions
   ) {
     this.reports = new RingBuffer<BugReport>(options.maxReports);
     this.breadcrumbs = new RingBuffer<Breadcrumb>(options.maxBreadcrumbs);
@@ -39,7 +47,7 @@ export class ReportManager {
     this.unsubscribers.push(
       this.eventBus.on('error:captured', (payload: ErrorPayload) => {
         this.addBreadcrumb({ category: 'error', message: payload.message });
-        this.handleCapturedEvent('error', payload);
+        void this.handleCapturedEvent('error', payload);
       }),
       this.eventBus.on('console:captured', (payload: ConsolePayload) => {
         this.addBreadcrumb({
@@ -47,11 +55,21 @@ export class ReportManager {
           message: `console.${payload.level}: ${payload.args.join(', ')}`,
         });
         if (payload.level === 'error') {
-          this.handleCapturedEvent('console', payload);
+          void this.handleCapturedEvent('console', payload);
         }
       }),
       this.eventBus.on('network:captured', (payload: NetworkPayload) => {
-        this.handleCapturedEvent('network', payload);
+        void this.handleCapturedEvent('network', payload);
+      }),
+      this.eventBus.on('performance:captured', (payload: PerformancePayload) => {
+        this.addBreadcrumb({
+          category: 'performance',
+          message: `${payload.metric}: ${payload.value}ms`,
+        });
+        void this.handleCapturedEvent('performance', payload);
+      }),
+      this.eventBus.on('memory:captured', (payload: MemoryPayload) => {
+        void this.handleCapturedEvent('memory', payload);
       }),
       this.eventBus.on('breadcrumb:added', (data: Omit<Breadcrumb, 'timestamp'>) => {
         this.addBreadcrumb(data);
@@ -59,10 +77,10 @@ export class ReportManager {
     );
   }
 
-  private handleCapturedEvent(
+  private async handleCapturedEvent(
     type: BugReportType,
-    payload: ErrorPayload | ConsolePayload | NetworkPayload
-  ): void {
+    payload: ErrorPayload | ConsolePayload | NetworkPayload | PerformancePayload | MemoryPayload
+  ): Promise<void> {
     if (!this.rateLimiter.allow()) return;
 
     const fingerprint = computeFingerprint(payload);
@@ -87,6 +105,20 @@ export class ReportManager {
       breadcrumbs: this.breadcrumbs.toArray(),
       context: this.contextCollector.snapshot(),
     };
+
+    // Call screenshot hook if provided
+    if (this.options.screenshotFn) {
+      try {
+        report.screenshot = await Promise.race([
+          this.options.screenshotFn(),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('screenshot timeout')), SCREENSHOT_TIMEOUT_MS)
+          ),
+        ]);
+      } catch {
+        // Screenshot failed or timed out — continue without it
+      }
+    }
 
     // Run beforeReport filter
     const filtered = this.options.beforeReport(report);
