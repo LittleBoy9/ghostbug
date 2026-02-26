@@ -17,6 +17,12 @@
   <img src="https://img.shields.io/badge/tests-81%20passing-6ee7b7?style=flat-square" alt="tests passing" />
 </p>
 
+<p align="center">
+  <a href="https://littleboy9.github.io/ghostbug/"><strong>Website</strong></a> &nbsp;&middot;&nbsp;
+  <a href="https://www.npmjs.com/package/ghostbug"><strong>npm</strong></a> &nbsp;&middot;&nbsp;
+  <a href="https://github.com/LittleBoy9/ghostbug"><strong>GitHub</strong></a>
+</p>
+
 ---
 
 ## Why ghostbug?
