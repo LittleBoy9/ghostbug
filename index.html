@@ -241,7 +241,8 @@
       color: #64748b;
       transition: color 0.2s, text-shadow 0.2s;
     }
-    .nav__links a:hover {
+    .nav__links a:hover,
+    .nav__links a.active {
       color: #6ee7b7;
       text-shadow: 0 0 12px rgba(110, 231, 183, 0.3);
     }
@@ -1353,7 +1354,7 @@
 
     /* ── Footer ────────────────────────────────── */
     .footer {
-      padding: 40px 0;
+      padding: 40px 0 80px;
       border-top: 1px solid rgba(255, 255, 255, 0.04);
     }
     .footer__inner {
@@ -1395,6 +1396,126 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* ── Inline CTA Banner ─────────────────────── */
+    .inline-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 28px 24px;
+      margin-top: 56px;
+      border-radius: 16px;
+      background: rgba(110,231,183,0.03);
+      border: 1px solid rgba(110,231,183,0.1);
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .inline-cta.visible { opacity: 1; transform: translateY(0); }
+    .inline-cta__text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+    .inline-cta__text span { color: #6ee7b7; }
+    .inline-cta .btn--primary { padding: 10px 22px; font-size: 14px; }
+    .inline-cta__install {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(110,231,183,0.12);
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .inline-cta__install:hover {
+      border-color: rgba(110,231,183,0.3);
+      background: rgba(110,231,183,0.04);
+    }
+    .inline-cta__install .dollar { color: #6ee7b7; user-select: none; }
+    .inline-cta__install .name { color: #6ee7b7; }
+    .inline-cta__copy {
+      background: none; border: none; color: #475569;
+      cursor: pointer; padding: 2px; display: flex;
+      transition: color 0.2s;
+    }
+    .inline-cta__copy:hover { color: #6ee7b7; }
+    .inline-cta__copy svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* ── Sticky Bottom Bar ────────────────────── */
+    .sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      padding: 12px 0;
+      background: rgba(8,7,13,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(110,231,183,0.1);
+      transform: translateY(100%);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    .sticky-bar.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .sticky-bar__inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .sticky-bar__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .sticky-bar__left span { font-size: 20px; }
+    .sticky-bar__right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sticky-bar__cmd {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(110,231,183,0.12);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sticky-bar__cmd:hover {
+      border-color: rgba(110,231,183,0.3);
+    }
+    .sticky-bar__cmd .dollar { color: #6ee7b7; user-select: none; }
+    .sticky-bar__cmd .name { color: #6ee7b7; }
+    .sticky-bar .btn--primary {
+      padding: 8px 20px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
     /* ── Responsive ────────────────────────────── */
     @media (max-width: 768px) {
       .features__grid { grid-template-columns: 1fr; }
@@ -1406,6 +1527,10 @@
       .footer__links { flex-wrap: wrap; justify-content: center; }
       .how-it-works__flow { flex-direction: column; }
       .flow-arrow { transform: rotate(90deg); }
+      .inline-cta { flex-direction: column; text-align: center; }
+      .sticky-bar__left { display: none; }
+      .sticky-bar__cmd { display: none; }
+      .sticky-bar__inner { justify-content: center; }
     }
     @media (min-width: 769px) and (max-width: 1024px) {
       .features__grid { grid-template-columns: repeat(2, 1fr); }
@@ -1442,7 +1567,7 @@
       </a>
       <ul class="nav__links">
         <li><a href="#features">Features</a></li>
-        <li><a href="#demo" style="color:#6ee7b7;">Live Demo</a></li>
+        <li><a href="#demo">Live Demo</a></li>
         <li><a href="#how">How It Works</a></li>
         <li><a href="#compare">Compare</a></li>
         <li><a href="#quickstart">Quick Start</a></li>
@@ -1573,6 +1698,18 @@
           <div class="feature-card__desc">Records last 20 clicks with selectors and tracks form input, scrolling, and resize events as breadcrumbs.</div>
         </div>
       </div>
+
+      <!-- Inline CTA after features -->
+      <div class="inline-cta" data-reveal>
+        <div class="inline-cta__text"><span>8 collectors.</span> Zero config. Try it now.</div>
+        <div class="inline-cta__install" onclick="copyInline(this)">
+          <span class="dollar">$</span> npm install <span class="name">ghostbug</span>
+          <button class="inline-cta__copy" aria-label="Copy">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          </button>
+        </div>
+        <a href="https://www.npmjs.com/package/ghostbug" target="_blank" class="btn btn--primary">View on npm</a>
+      </div>
     </div>
   </section>
 
@@ -1681,6 +1818,18 @@ ghostbug<span class="syn-punc">.</span><span class="syn-fn">toMarkdown</span><sp
       </div>
 
       <div class="demo-status" id="demoStatus"></div>
+
+      <!-- Inline CTA after demo -->
+      <div class="inline-cta" data-reveal style="margin-top:40px;">
+        <div class="inline-cta__text">Impressed? <span>Add it in seconds.</span></div>
+        <div class="inline-cta__install" onclick="copyInline(this)">
+          <span class="dollar">$</span> npm install <span class="name">ghostbug</span>
+          <button class="inline-cta__copy" aria-label="Copy">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          </button>
+        </div>
+        <a href="https://www.npmjs.com/package/ghostbug" target="_blank" class="btn btn--primary">View on npm</a>
+      </div>
     </div>
   </section>
 
@@ -1898,6 +2047,24 @@ ghostbug.<span class="syn-fn">init</span>({ <span class="syn-prop">widget</span>
     </div>
   </section>
 
+  <!-- Sticky Bottom Bar -->
+  <div class="sticky-bar" id="stickyBar">
+    <div class="sticky-bar__inner">
+      <div class="sticky-bar__left">
+        <span>&#x1F47B;</span>
+        ghostbug — zero-config bug collector
+      </div>
+      <div class="sticky-bar__right">
+        <div class="sticky-bar__cmd" onclick="copyStickyInstall(this)">
+          <span class="dollar">$</span> npm install <span class="name">ghostbug</span>
+        </div>
+        <a href="https://www.npmjs.com/package/ghostbug" target="_blank" class="btn btn--primary">
+          Get on npm
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer__inner">
@@ -1931,17 +2098,27 @@ ghostbug.<span class="syn-fn">init</span>({ <span class="syn-prop">widget</span>
       revealObserver.observe(el);
     });
 
-    // ── Nav scroll effect ───────────────────────
+    // ── Nav scroll effect + scroll spy ──────────
     let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
-          ticking = false;
-        });
-        ticking = true;
-      }
+    const navLinks = document.querySelectorAll('.nav__links a[href^="#"]');
+    const sections = [];
+    navLinks.forEach(link => {
+      const id = link.getAttribute('href').slice(1);
+      const sec = document.getElementById(id);
+      if (sec) sections.push({ id, el: sec, link });
     });
+
+    function updateActiveNav() {
+      let current = '';
+      const scrollY = window.scrollY + 200;
+      sections.forEach(({ id, el }) => {
+        if (el.offsetTop <= scrollY) current = id;
+      });
+      navLinks.forEach(link => {
+        const id = link.getAttribute('href').slice(1);
+        link.classList.toggle('active', id === current);
+      });
+    }
 
     // ── Spectral Particles ──────────────────────
     const particleContainer = document.getElementById('particles');
@@ -2002,6 +2179,48 @@ ghostbug.<span class="syn-fn">init</span>({ <span class="syn-prop">widget</span>
         setTimeout(() => el.querySelector('code').innerHTML = original, 1500);
       });
     }
+
+    // ── Inline CTA copy ────────────────────────
+    function copyInline(el) {
+      navigator.clipboard.writeText('npm install ghostbug').then(() => {
+        const original = el.innerHTML;
+        el.innerHTML = '<span style="color:#6ee7b7;font-weight:600;">&#10003; Copied!</span>';
+        setTimeout(() => el.innerHTML = original, 1500);
+      });
+    }
+
+    // ── Sticky bar copy ─────────────────────────
+    function copyStickyInstall(el) {
+      navigator.clipboard.writeText('npm install ghostbug').then(() => {
+        const original = el.innerHTML;
+        el.innerHTML = '<span style="color:#6ee7b7;font-weight:600;">&#10003; Copied!</span>';
+        setTimeout(() => el.innerHTML = original, 1500);
+      });
+    }
+
+    // ── Sticky bar show/hide ────────────────────
+    const stickyBar = document.getElementById('stickyBar');
+    const heroSection = document.querySelector('.hero');
+    const footerEl = document.querySelector('.footer');
+
+    function updateStickyBar() {
+      const heroBottom = heroSection.getBoundingClientRect().bottom;
+      const footerTop = footerEl.getBoundingClientRect().top;
+      const show = heroBottom < 0 && footerTop > window.innerHeight;
+      stickyBar.classList.toggle('show', show);
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+          updateStickyBar();
+          updateActiveNav();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
 
     // ── Live Demo — Autoplay Loop ─────────────────
     let demoRunning = false;
