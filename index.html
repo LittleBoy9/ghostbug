@@ -733,6 +733,246 @@
     .step__code .syn-str { color: #86efac; }
     .step__code .syn-fn { color: #6ee7b7; }
 
+    /* ── Live Demo ─────────────────────────────── */
+    .demo {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .demo.visible { opacity: 1; transform: translateY(0); }
+
+    /* Simulated browser */
+    .demo-browser {
+      border-radius: 14px;
+      background: #0c1018;
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+    .demo-browser__bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .demo-browser__dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-browser__dot--r { background: #f87171; }
+    .demo-browser__dot--y { background: #fbbf24; }
+    .demo-browser__dot--g { background: #6ee7b7; }
+    .demo-browser__url {
+      flex: 1;
+      margin-left: 10px;
+      padding: 5px 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 6px;
+      font-size: 12px;
+      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .demo-browser__body {
+      padding: 20px;
+      min-height: 320px;
+      position: relative;
+    }
+    /* Fake app UI */
+    .demo-app__header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 16px;
+    }
+    .demo-app__logo { font-weight: 700; font-size: 14px; color: #cbd5e1; }
+    .demo-app__nav { display: flex; gap: 12px; }
+    .demo-app__nav span { font-size: 12px; color: #475569; }
+    .demo-app__content { font-size: 13px; color: #64748b; line-height: 1.7; }
+    .demo-app__btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 8px 20px;
+      background: rgba(110,231,183,0.1);
+      border: 1px solid rgba(110,231,183,0.2);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6ee7b7;
+      cursor: default;
+      transition: all 0.2s;
+    }
+    .demo-app__btn.demo-clicked {
+      background: rgba(110,231,183,0.25);
+      transform: scale(0.96);
+    }
+
+    /* Error overlay flash */
+    .demo-error-flash {
+      position: absolute;
+      inset: 0;
+      background: rgba(248,113,113,0.06);
+      border: 2px solid rgba(248,113,113,0.3);
+      border-radius: 0 0 13px 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    .demo-error-flash.show { opacity: 1; }
+
+    /* Console log area */
+    .demo-console {
+      margin-top: 16px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      min-height: 60px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+    .demo-console__line {
+      padding: 2px 0;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all 0.3s ease;
+    }
+    .demo-console__line.show { opacity: 1; transform: translateY(0); }
+    .demo-console__line--info { color: #64748b; }
+    .demo-console__line--error { color: #f87171; }
+    .demo-console__line--ghost { color: #6ee7b7; }
+    .demo-console__line--network { color: #60a5fa; }
+
+    /* Right side: ghostbug widget simulation */
+    .demo-widget {
+      border-radius: 14px;
+      background: #0c1018;
+      border: 1px solid rgba(110,231,183,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .demo-widget__header {
+      display: flex; align-items: center;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .demo-widget__title {
+      flex: 1;
+      font-size: 14px; font-weight: 700; color: #6ee7b7;
+    }
+    .demo-widget__badge {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #f87171;
+      color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 8px rgba(248,113,113,0.4);
+      transition: all 0.3s;
+    }
+    .demo-widget__badge.pulse {
+      animation: badgePop 0.4s ease;
+    }
+    @keyframes badgePop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+    .demo-widget__body {
+      min-height: 280px;
+      position: relative;
+    }
+    .demo-widget__empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #334155;
+      font-size: 13px;
+      transition: opacity 0.3s;
+    }
+    .demo-widget__empty-ghost { font-size: 40px; margin-bottom: 8px; opacity: 0.3; }
+    .demo-widget__empty.hidden { opacity: 0; pointer-events: none; }
+
+    .demo-widget__item {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .demo-widget__item.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .demo-widget__item-tag {
+      display: inline-block;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      padding: 2px 6px; border-radius: 4px; margin-right: 6px;
+    }
+    .demo-widget__item-tag--error { background: rgba(248,113,113,0.12); color: #f87171; }
+    .demo-widget__item-tag--network { background: rgba(96,165,250,0.12); color: #60a5fa; }
+    .demo-widget__item-tag--console { background: rgba(251,146,60,0.12); color: #fb923c; }
+    .demo-widget__item-msg { font-size: 12px; color: #cbd5e1; margin-top: 4px; }
+    .demo-widget__item-meta { font-size: 11px; color: #475569; margin-top: 2px; }
+    .demo-widget__item-crumbs {
+      margin-top: 6px;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .demo-widget__item-crumbs .crumb-click { color: #a78bfa; }
+    .demo-widget__item-crumbs .crumb-net { color: #60a5fa; }
+    .demo-widget__item-crumbs .crumb-err { color: #f87171; }
+
+    /* Ghost catch animation */
+    .demo-ghost-catch {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 48px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      filter: drop-shadow(0 0 20px rgba(110,231,183,0.6));
+      transition: none;
+    }
+    .demo-ghost-catch.pop {
+      animation: ghostCatch 0.8s ease-out forwards;
+    }
+    @keyframes ghostCatch {
+      0% { transform: translate(-50%,-50%) scale(0) rotate(-20deg); opacity: 0; }
+      40% { transform: translate(-50%,-50%) scale(1.3) rotate(10deg); opacity: 1; }
+      70% { transform: translate(-50%,-50%) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(0.8) rotate(0deg); opacity: 0; }
+    }
+
+    /* Status indicator */
+    .demo-status {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #475569;
+      min-height: 20px;
+      transition: color 0.3s;
+    }
+    .demo-status.active { color: #6ee7b7; }
+
+    @media (max-width: 768px) {
+      .demo { grid-template-columns: 1fr; }
+    }
+
     /* ── How It Works — Ghostly Flow ──────────── */
     .how-it-works__flow {
       display: flex;
@@ -1292,6 +1532,63 @@ ghostbug<span class="syn-punc">.</span><span class="syn-fn">toMarkdown</span><sp
 
   <div class="divider"></div>
 
+  <!-- Live Demo -->
+  <section id="demo">
+    <div class="container">
+      <div class="section__label">Live Demo</div>
+      <h2 class="section__title">Watch the ghost in action.</h2>
+      <p class="section__desc">See what happens when a bug occurs in your app. Hit play and watch ghostbug catch it.</p>
+
+      <div class="demo" data-reveal>
+        <!-- Left: Simulated Browser -->
+        <div class="demo-browser">
+          <div class="demo-browser__bar">
+            <div class="demo-browser__dot demo-browser__dot--r"></div>
+            <div class="demo-browser__dot demo-browser__dot--y"></div>
+            <div class="demo-browser__dot demo-browser__dot--g"></div>
+            <div class="demo-browser__url">localhost:3000/dashboard</div>
+          </div>
+          <div class="demo-browser__body">
+            <div class="demo-error-flash" id="demoErrorFlash"></div>
+            <div class="demo-app__header">
+              <div class="demo-app__logo">MyApp</div>
+              <div class="demo-app__nav">
+                <span>Dashboard</span>
+                <span>Settings</span>
+                <span>Profile</span>
+              </div>
+            </div>
+            <div class="demo-app__content">
+              <p>Welcome back, User #42</p>
+              <p style="margin-top:8px;color:#475569;">Loading user data from API...</p>
+              <div class="demo-app__btn" id="demoBtn">Fetch User Data</div>
+            </div>
+            <div class="demo-console" id="demoConsole"></div>
+          </div>
+        </div>
+
+        <!-- Right: ghostbug Widget -->
+        <div class="demo-widget">
+          <div class="demo-widget__header">
+            <span class="demo-widget__title">&#x1F47B; ghostbug</span>
+            <div class="demo-widget__badge" id="demoBadge">0</div>
+          </div>
+          <div class="demo-widget__body" id="demoWidgetBody">
+            <div class="demo-ghost-catch" id="demoGhostCatch">&#x1F47B;</div>
+            <div class="demo-widget__empty" id="demoEmpty">
+              <div class="demo-widget__empty-ghost">&#x1F47B;</div>
+              Waiting for bugs...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-status" id="demoStatus"></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
   <!-- How It Works -->
   <section id="how">
     <div class="container" style="text-align: center;">
@@ -1610,6 +1907,220 @@ ghostbug.<span class="syn-fn">init</span>({ <span class="syn-prop">widget</span>
         setTimeout(() => el.querySelector('code').innerHTML = original, 1500);
       });
     }
+
+    // ── Live Demo — Autoplay Loop ─────────────────
+    let demoRunning = false;
+    let demoVisible = false;
+    let demoCancelled = false;
+
+    function wait(ms) {
+      return new Promise((resolve, reject) => {
+        const id = setTimeout(resolve, ms);
+        // Check cancel flag periodically
+        const check = setInterval(() => {
+          if (demoCancelled) { clearTimeout(id); clearInterval(check); reject('cancelled'); }
+        }, 200);
+        setTimeout(() => clearInterval(check), ms + 100);
+      });
+    }
+
+    function resetDemo() {
+      const consoleEl = document.getElementById('demoConsole');
+      const badge = document.getElementById('demoBadge');
+      const body = document.getElementById('demoWidgetBody');
+      const empty = document.getElementById('demoEmpty');
+      const ghostCatch = document.getElementById('demoGhostCatch');
+      const status = document.getElementById('demoStatus');
+
+      consoleEl.innerHTML = '';
+      body.querySelectorAll('.demo-widget__item').forEach(el => el.remove());
+      empty.classList.remove('hidden');
+      badge.textContent = '0';
+      badge.classList.remove('pulse');
+      ghostCatch.classList.remove('pop');
+      status.className = 'demo-status';
+      status.textContent = '';
+    }
+
+    async function runDemo() {
+      if (demoRunning) return;
+      demoRunning = true;
+      demoCancelled = false;
+
+      const appBtn = document.getElementById('demoBtn');
+      const consoleEl = document.getElementById('demoConsole');
+      const flash = document.getElementById('demoErrorFlash');
+      const badge = document.getElementById('demoBadge');
+      const body = document.getElementById('demoWidgetBody');
+      const empty = document.getElementById('demoEmpty');
+      const ghostCatch = document.getElementById('demoGhostCatch');
+      const status = document.getElementById('demoStatus');
+
+      let bugCount = 0;
+      const time = () => new Date().toLocaleTimeString('en-US', { hour12: false });
+
+      function addConsoleLine(text, cls, delay) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (demoCancelled) return reject('cancelled');
+            const line = document.createElement('div');
+            line.className = 'demo-console__line ' + cls;
+            line.textContent = text;
+            consoleEl.appendChild(line);
+            requestAnimationFrame(() => line.classList.add('show'));
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+            resolve();
+          }, delay);
+        });
+      }
+
+      function addWidgetItem(html, delay) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (demoCancelled) return reject('cancelled');
+            empty.classList.add('hidden');
+            bugCount++;
+            badge.textContent = bugCount;
+            badge.classList.remove('pulse');
+            void badge.offsetWidth;
+            badge.classList.add('pulse');
+
+            ghostCatch.classList.remove('pop');
+            void ghostCatch.offsetWidth;
+            ghostCatch.classList.add('pop');
+
+            const item = document.createElement('div');
+            item.className = 'demo-widget__item';
+            item.innerHTML = html;
+            body.appendChild(item);
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => item.classList.add('show'));
+            });
+            resolve();
+          }, delay);
+        });
+      }
+
+      function setStatus(text, delay) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            if (demoCancelled) return reject('cancelled');
+            status.textContent = text;
+            resolve();
+          }, delay);
+        });
+      }
+
+      try {
+        // Step 1: User clicks button
+        status.className = 'demo-status active';
+        await setStatus('User clicks "Fetch User Data"...', 300);
+        await addConsoleLine('> Click: button.demo-app__btn "Fetch User Data"', 'demo-console__line--info', 600);
+        appBtn.classList.add('demo-clicked');
+        setTimeout(() => appBtn.classList.remove('demo-clicked'), 200);
+
+        // Step 2: breadcrumb recorded
+        await addConsoleLine('[ghostbug] breadcrumb: click > "Fetch User Data"', 'demo-console__line--ghost', 800);
+
+        // Step 3: Network request
+        await setStatus('API request fires...', 400);
+        await addConsoleLine('> fetch("GET /api/users/42")', 'demo-console__line--info', 600);
+        await addConsoleLine('[ghostbug] breadcrumb: network > GET /api/users/42', 'demo-console__line--ghost', 500);
+
+        // Step 4: Network fails
+        await setStatus('Server responds with 500...', 600);
+        await addConsoleLine('< GET /api/users/42 → 500 Internal Server Error (342ms)', 'demo-console__line--network', 800);
+        flash.classList.add('show');
+        setTimeout(() => flash.classList.remove('show'), 300);
+
+        // Step 5: ghostbug catches network error
+        await addConsoleLine('[ghostbug] network error captured!', 'demo-console__line--ghost', 400);
+        await setStatus('ghostbug catches the network failure...', 100);
+
+        await addWidgetItem(`
+          <span class="demo-widget__item-tag demo-widget__item-tag--network">NETWORK</span>
+          <div class="demo-widget__item-msg">GET /api/users/42 &#8594; 500</div>
+          <div class="demo-widget__item-meta">${time()} &middot; /dashboard &middot; 342ms</div>
+          <div class="demo-widget__item-crumbs">
+            <span class="crumb-click">click</span> "Fetch User Data" &#8594;
+            <span class="crumb-net">network</span> GET /api/users/42 &#8594;
+            <span class="crumb-net">500</span> Internal Server Error
+          </div>
+        `, 600);
+
+        // Step 6: Code throws
+        await setStatus('App code throws from bad response...', 800);
+        await addConsoleLine('Uncaught TypeError: Cannot read properties of undefined (reading \'name\')', 'demo-console__line--error', 700);
+        flash.classList.add('show');
+        setTimeout(() => flash.classList.remove('show'), 400);
+
+        await addConsoleLine('[ghostbug] error captured with breadcrumb trail!', 'demo-console__line--ghost', 500);
+        await setStatus('ghostbug catches the error with full context...', 100);
+
+        await addWidgetItem(`
+          <span class="demo-widget__item-tag demo-widget__item-tag--error">ERROR</span>
+          <div class="demo-widget__item-msg">TypeError: Cannot read properties of undefined (reading 'name')</div>
+          <div class="demo-widget__item-meta">${time()} &middot; /dashboard &middot; 3 breadcrumbs</div>
+          <div class="demo-widget__item-crumbs">
+            <span class="crumb-click">click</span> "Fetch User Data" &#8594;
+            <span class="crumb-net">network</span> GET /api/users/42 &#8594; 500 &#8594;
+            <span class="crumb-err">error</span> TypeError: Cannot read...
+          </div>
+        `, 700);
+
+        // Step 7: Console.error
+        await setStatus('Error boundary logs console.error...', 800);
+        await addConsoleLine('console.error("Failed to load user profile")', 'demo-console__line--error', 600);
+        await addConsoleLine('[ghostbug] console.error captured!', 'demo-console__line--ghost', 400);
+
+        await addWidgetItem(`
+          <span class="demo-widget__item-tag demo-widget__item-tag--console">CONSOLE</span>
+          <div class="demo-widget__item-msg">Failed to load user profile</div>
+          <div class="demo-widget__item-meta">${time()} &middot; /dashboard &middot; console.error</div>
+        `, 600);
+
+        // Hold the final state so user can read it
+        await setStatus('', 500);
+        status.className = 'demo-status';
+        status.innerHTML = '3 bugs caught with full context. <span style="color:#6ee7b7;">Ready to export as JSON or Markdown.</span>';
+
+        // Pause before restarting
+        await wait(4000);
+
+        // Reset and loop
+        demoRunning = false;
+        if (demoVisible) {
+          resetDemo();
+          await wait(1500);
+          if (demoVisible && !demoCancelled) runDemo();
+        }
+      } catch (e) {
+        // Cancelled — clean up
+        demoRunning = false;
+      }
+    }
+
+    // Autoplay when section scrolls into view, pause when out
+    const demoSection = document.getElementById('demo');
+    const demoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          demoVisible = true;
+          demoCancelled = false;
+          if (!demoRunning) {
+            resetDemo();
+            setTimeout(() => runDemo(), 600);
+          }
+        } else {
+          demoVisible = false;
+          demoCancelled = true;
+          demoRunning = false;
+          resetDemo();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    demoObserver.observe(demoSection);
   </script>
 </body>
 </html>
