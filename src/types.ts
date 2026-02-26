@@ -19,8 +19,6 @@ export interface GhostbugOptions {
   beforeReport?: (report: BugReport) => BugReport | false | null;
   /** Enable SDK debug logging. Default: false */
   debug?: boolean;
-  /** Async function that returns a screenshot data URL. Called on each new bug report. */
-  screenshotFn?: () => Promise<string>;
 }
 
 export interface CollectorToggle {
@@ -62,7 +60,6 @@ export interface BugReport {
   payload: ErrorPayload | ConsolePayload | NetworkPayload | PerformancePayload | MemoryPayload;
   breadcrumbs: Breadcrumb[];
   context: PageContext;
-  screenshot?: string;
 }
 
 // ──────────────────────────────────────────────

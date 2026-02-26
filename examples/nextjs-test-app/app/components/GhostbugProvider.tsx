@@ -14,9 +14,37 @@ export default function GhostbugProvider({
         position: "bottom-right",
       },
       debug: true,
+      collectors: {
+        errors: true,
+        console: true,
+        network: true,
+        clicks: true,
+        interactions: true,
+        performance: true,
+        memory: true,
+      },
+      beforeReport: (report) => {
+        // Example filter: strip any PII from report context
+        if (report.context.url.includes("secret")) return false;
+        return report;
+      },
     });
 
-    // Optional: log bugs to console for demo purposes
+    // Set user context
+    ghostbug.setUser({
+      id: "demo-user-42",
+      name: "Jane Doe",
+      plan: "pro",
+    });
+
+    // Set tags
+    ghostbug.setTags({
+      environment: "demo",
+      version: "0.2.0-beta.0",
+      feature: "full-showcase",
+    });
+
+    // Log bugs to console for demo purposes
     ghostbug.onBug((report) => {
       console.log("[ghostbug] Bug captured:", report.type, report.payload);
     });

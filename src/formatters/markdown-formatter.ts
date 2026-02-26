@@ -37,6 +37,26 @@ export function formatAsMarkdown(reports: BugReport[]): string {
     lines.push(...formatPayload(report.payload));
     lines.push('');
 
+    // User context
+    if (report.context.user) {
+      lines.push('### User Context');
+      lines.push('');
+      lines.push('```json');
+      lines.push(JSON.stringify(report.context.user, null, 2));
+      lines.push('```');
+      lines.push('');
+    }
+
+    // Tags
+    if (report.context.tags) {
+      lines.push('### Tags');
+      lines.push('');
+      lines.push('```json');
+      lines.push(JSON.stringify(report.context.tags, null, 2));
+      lines.push('```');
+      lines.push('');
+    }
+
     // Breadcrumbs
     if (report.breadcrumbs.length > 0) {
       lines.push('### Breadcrumbs');

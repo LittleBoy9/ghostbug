@@ -31,12 +31,10 @@ let initialized = false;
 let currentUser: Record<string, unknown> | undefined;
 let currentTags: Record<string, unknown> | undefined;
 
-type MergedOptions = Omit<Required<GhostbugOptions>, 'screenshotFn'> & {
-  screenshotFn?: () => Promise<string>;
-};
+type MergedOptions = Required<GhostbugOptions>;
 
 function mergeOptions(
-  defaults: Omit<Required<GhostbugOptions>, 'screenshotFn'>,
+  defaults: Required<GhostbugOptions>,
   user?: GhostbugOptions
 ): MergedOptions {
   if (!user) return { ...defaults };
@@ -50,7 +48,6 @@ function mergeOptions(
     rateLimit: { ...defaults.rateLimit, ...user.rateLimit } as Required<RateLimitConfig>,
     beforeReport: user.beforeReport ?? defaults.beforeReport,
     debug: user.debug ?? defaults.debug,
-    screenshotFn: user.screenshotFn,
   };
 }
 

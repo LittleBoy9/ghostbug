@@ -2,7 +2,7 @@ import type { GhostbugOptions } from './types';
 
 export const VERSION = '0.1.0';
 
-export const DEFAULT_OPTIONS: Omit<Required<GhostbugOptions>, 'screenshotFn'> = {
+export const DEFAULT_OPTIONS: Required<GhostbugOptions> = {
   maxReports: 50,
   maxBreadcrumbs: 20,
   maxClicks: 20,

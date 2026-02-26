@@ -161,18 +161,65 @@ export const WIDGET_STYLES = `
   }
 
   .gb-report-item {
-    padding: 10px 16px;
     border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
     transition: background 0.15s;
-  }
-
-  .gb-report-item:hover {
-    background: #f8f9fa;
   }
 
   .gb-report-item:last-child {
     border-bottom: none;
+  }
+
+  .gb-report-summary {
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+
+  .gb-report-summary:hover {
+    background: #f8f9fa;
+  }
+
+  .gb-report-detail {
+    display: none;
+    padding: 0 16px 12px;
+    border-top: 1px dashed #e8e8e8;
+  }
+
+  .gb-report-item.gb-expanded .gb-report-detail {
+    display: block;
+  }
+
+  .gb-detail-section {
+    margin-top: 8px;
+  }
+
+  .gb-detail-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #999;
+    margin-bottom: 2px;
+  }
+
+  .gb-detail-value {
+    font-size: 12px;
+    color: #555;
+    word-break: break-word;
+    line-height: 1.4;
+  }
+
+  .gb-detail-pre {
+    font-size: 11px;
+    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 6px;
+    overflow-x: auto;
+    max-height: 120px;
+    overflow-y: auto;
+    color: #333;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .gb-report-type {

@@ -16,11 +16,7 @@ import { ContextCollector } from '../collectors/context-collector';
 import { computeFingerprint } from '../utils/fingerprint';
 import { generateId } from '../utils/id';
 
-const SCREENSHOT_TIMEOUT_MS = 3000;
-
-type ReportManagerOptions = Omit<Required<GhostbugOptions>, 'screenshotFn'> & {
-  screenshotFn?: () => Promise<string>;
-};
+type ReportManagerOptions = Required<GhostbugOptions>;
 
 export class ReportManager {
   private reports: RingBuffer<BugReport>;
@@ -105,20 +101,6 @@ export class ReportManager {
       breadcrumbs: this.breadcrumbs.toArray(),
       context: this.contextCollector.snapshot(),
     };
-
-    // Call screenshot hook if provided
-    if (this.options.screenshotFn) {
-      try {
-        report.screenshot = await Promise.race([
-          this.options.screenshotFn(),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error('screenshot timeout')), SCREENSHOT_TIMEOUT_MS)
-          ),
-        ]);
-      } catch {
-        // Screenshot failed or timed out — continue without it
-      }
-    }
 
     // Run beforeReport filter
     const filtered = this.options.beforeReport(report);
