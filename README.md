@@ -1,28 +1,54 @@
-# ghostbug
+<p align="center">
+  <img src="https://em-content.zobj.net/source/apple/391/ghost_1f47b.png" width="80" alt="ghostbug" />
+</p>
 
-Zero-config automatic bug context collector for the browser. Drop it in, forget about it. When something breaks, you already have everything you need.
+<h1 align="center">ghostbug</h1>
 
-[![npm version](https://img.shields.io/npm/v/ghostbug.svg)](https://www.npmjs.com/package/ghostbug)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/ghostbug)](https://bundlephobia.com/package/ghostbug)
-[![license](https://img.shields.io/npm/l/ghostbug.svg)](https://github.com/sounakdas/ghostbug/blob/main/LICENSE)
+<p align="center">
+  <strong>Zero-config bug context collector for the browser.</strong><br />
+  Drop it in, forget about it. When something breaks, you already have everything you need.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/ghostbug"><img src="https://img.shields.io/npm/v/ghostbug.svg?style=flat-square&color=10b981" alt="npm version" /></a>
+  <a href="https://bundlephobia.com/package/ghostbug"><img src="https://img.shields.io/bundlephobia/minzip/ghostbug?style=flat-square&color=6ee7b7&label=size" alt="bundle size" /></a>
+  <a href="https://github.com/LittleBoy9/ghostbug/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/ghostbug.svg?style=flat-square&color=8b5cf6" alt="license" /></a>
+  <img src="https://img.shields.io/badge/dependencies-0-10b981?style=flat-square" alt="zero dependencies" />
+  <img src="https://img.shields.io/badge/tests-81%20passing-6ee7b7?style=flat-square" alt="tests passing" />
+</p>
+
+---
 
 ## Why ghostbug?
 
-Testers spend 90% of their time manually collecting bug context — screenshots, error messages, console logs, steps to reproduce. ghostbug eliminates that by silently capturing everything in the background.
+Testers spend 90% of their time manually collecting bug context — error messages, console logs, network failures, steps to reproduce. **ghostbug eliminates that** by silently capturing everything in the background.
 
-| | Sentry / LogRocket | ghostbug |
+|  | Sentry / LogRocket | ghostbug |
 |---|---|---|
-| Setup | Account, API keys, config | `ghostbug.init()` |
-| Server needed | Yes (paid) | No — everything local |
-| Bundle size | 50-200KB+ | **~7KB gzipped** |
-| Dependencies | Multiple | **Zero** |
-| Output | Dashboard (another tab) | JSON / Markdown you paste into GitHub Issues |
+| **Setup** | Account, API keys, config | `ghostbug.init()` |
+| **Server needed** | Yes (paid SaaS) | **No** — 100% client-side |
+| **Bundle size** | 50–200KB+ | **~7KB gzipped** |
+| **Dependencies** | Multiple | **Zero** |
+| **Data privacy** | Sent to their servers | **Stays in the browser** |
+| **Output** | Dashboard (another tab) | JSON / Markdown for GitHub Issues |
+| **Pricing** | Free tier / Paid | **Free forever** |
+
+---
 
 ## Install
 
 ```bash
 npm install ghostbug
 ```
+
+```bash
+# or
+yarn add ghostbug
+# or
+pnpm add ghostbug
+```
+
+---
 
 ## Quick Start
 
@@ -32,13 +58,20 @@ import ghostbug from "ghostbug";
 ghostbug.init();
 ```
 
-That's it. ghostbug now auto-captures:
+That's it. ghostbug now silently auto-captures:
 
-- **JS errors** — `window.onerror` + unhandled promise rejections
-- **Console errors** — `console.error()` and `console.warn()`
-- **Failed network requests** — `fetch` and `XMLHttpRequest` (4xx/5xx)
-- **User click trail** — last 20 clicks with element selectors
-- **Page context** — URL, browser, viewport, timestamp
+| Collector | What it catches |
+|---|---|
+| **Errors** | `window.onerror` + unhandled promise rejections with stack traces |
+| **Console** | `console.error()` and `console.warn()` with full arguments |
+| **Network** | Failed `fetch` and `XMLHttpRequest` (4xx/5xx) with timing |
+| **Clicks** | Last 20 user clicks with element selectors and positions |
+| **Interactions** | Form input, scroll, and resize events |
+| **Performance** | Long Tasks, FCP, LCP, layout shifts via PerformanceObserver |
+| **Memory** | Heap usage sampling, high usage (>90%) and rapid growth (>50%) alerts |
+| **Context** | URL, browser, viewport, device pixel ratio, referrer |
+
+---
 
 ## API
 
@@ -64,23 +97,26 @@ ghostbug.init({
     console: true,
     network: true,
     clicks: true,
+    interactions: true,
+    performance: true,
+    memory: true,
   },
 
-  // Max reports stored (oldest dropped when full)
-  maxReports: 50,
-
-  // Max breadcrumb trail per report
-  maxBreadcrumbs: 20,
+  maxReports: 50,      // Max reports stored (oldest dropped when full)
+  maxBreadcrumbs: 20,  // Max breadcrumb trail per report
+  maxClicks: 20,       // Max click trail entries
 
   // Rate limiting (prevent flood from error loops)
   rateLimit: { maxEvents: 10, windowMs: 1000 },
 
   // Filter/transform reports before storage
   beforeReport: (report) => {
-    // Return false to discard
+    // Return false/null to discard
     // Return modified report to transform
     return report;
   },
+
+  debug: false, // Enable SDK debug logging
 });
 ```
 
@@ -90,7 +126,6 @@ Returns all captured bug reports as an array.
 
 ```js
 const reports = ghostbug.getReports();
-console.log(reports);
 ```
 
 ### `ghostbug.toMarkdown()`
@@ -102,7 +137,8 @@ const md = ghostbug.toMarkdown();
 // Paste into GitHub Issues, Jira, Slack, etc.
 ```
 
-Example output:
+<details>
+<summary><strong>Example markdown output</strong></summary>
 
 ```markdown
 ## 1. TypeError: Cannot read property 'id' of undefined
@@ -125,12 +161,14 @@ TypeError: Cannot read property 'id' of undefined
 | 10:21:33 | error | TypeError: Cannot read... |
 ```
 
+</details>
+
 ### `ghostbug.download(filename?)`
 
 Downloads all reports as a JSON file.
 
 ```js
-ghostbug.download(); // downloads ghostbug-report.json
+ghostbug.download();              // ghostbug-report.json
 ghostbug.download("my-bugs.json"); // custom filename
 ```
 
@@ -140,7 +178,7 @@ Subscribe to bugs in real-time. Returns an unsubscribe function.
 
 ```js
 const unsubscribe = ghostbug.onBug((report) => {
-  // Send to Slack
+  // Send to Slack, your API, anywhere
   fetch("/api/slack-webhook", {
     method: "POST",
     body: JSON.stringify({ text: report.payload.message }),
@@ -151,6 +189,22 @@ const unsubscribe = ghostbug.onBug((report) => {
 unsubscribe();
 ```
 
+### `ghostbug.setUser(user)`
+
+Attach user context to every report.
+
+```js
+ghostbug.setUser({ id: "user-42", plan: "pro", email: "dev@example.com" });
+```
+
+### `ghostbug.setTags(tags)`
+
+Add custom tags to every report. Merges with existing tags.
+
+```js
+ghostbug.setTags({ environment: "staging", version: "2.1.0" });
+```
+
 ### `ghostbug.destroy()`
 
 Teardown everything — removes all listeners, restores patched APIs, unmounts widget.
@@ -158,6 +212,8 @@ Teardown everything — removes all listeners, restores patched APIs, unmounts w
 ```js
 ghostbug.destroy();
 ```
+
+---
 
 ## Framework Integration
 
@@ -203,7 +259,22 @@ import ghostbug from "ghostbug";
 ghostbug.init({ widget: true });
 ```
 
-### Plain HTML
+### Svelte
+
+```svelte
+<!-- +layout.svelte -->
+<script>
+  import { onMount, onDestroy } from "svelte";
+  import ghostbug from "ghostbug";
+
+  onMount(() => ghostbug.init({ widget: true }));
+  onDestroy(() => ghostbug.destroy());
+</script>
+
+<slot />
+```
+
+### Plain HTML (CDN)
 
 ```html
 <script src="https://unpkg.com/ghostbug/dist/index.iife.js"></script>
@@ -212,21 +283,25 @@ ghostbug.init({ widget: true });
 </script>
 ```
 
+---
+
 ## Widget
 
-Enable the floating widget for testers — a small bug icon that shows captured bugs with copy/export buttons.
+Enable the floating widget for testers:
 
 ```js
 ghostbug.init({ widget: true });
 ```
 
 The widget:
-- Shows a bug count badge
+- Shows a **live bug count** badge
 - Click to expand and see all captured bugs
 - **Copy MD** — copies markdown to clipboard
 - **Export** — downloads JSON file
-- Uses Shadow DOM — styles never leak into your app
+- Uses **Shadow DOM** — styles never leak into your app
 - Fully isolated — your CSS won't break it
+
+---
 
 ## Bug Report Structure
 
@@ -236,53 +311,61 @@ Each captured bug contains:
 {
   id: string;              // Unique report ID
   fingerprint: string;     // Hash for deduplication
-  type: "error" | "console" | "network";
+  type: "error" | "unhandled-rejection" | "console" | "network" | "performance" | "memory";
   timestamp: string;       // ISO 8601
   count: number;           // Occurrences (deduped)
-  payload: { ... };        // Error details
-  breadcrumbs: [ ... ];    // Events leading up to the bug
+  payload: { ... };        // Error/network/console/perf/memory details
+  breadcrumbs: [           // Events leading up to the bug
+    { timestamp, category, message, data }
+  ];
   context: {
     url: string;
+    referrer: string;
     userAgent: string;
+    language: string;
     viewport: { width, height };
-    // ...
+    screen: { width, height };
+    devicePixelRatio: number;
+    memory?: { usedJSHeapSize, totalJSHeapSize };
+    user?: { ... };        // From setUser()
+    tags?: { ... };        // From setTags()
   };
 }
 ```
 
+---
+
 ## How It Works
 
-- **Error capture** — Patches `window.onerror` and listens for `unhandledrejection`
-- **Console capture** — Monkey-patches `console.error` / `console.warn` (always calls originals)
-- **Network capture** — Patches `fetch` and `XMLHttpRequest` (only captures 4xx/5xx, never alters responses)
-- **Click tracking** — Uses capture-phase click listener (catches clicks even with `stopPropagation`)
-- **Deduplication** — Identical errors increment a counter instead of creating duplicate reports
-- **Rate limiting** — Token-bucket algorithm prevents floods from error loops
-- **Ring buffer** — Fixed-capacity storage prevents memory leaks in long-running apps
-- **Safe teardown** — `destroy()` restores all original APIs
+| Mechanism | Details |
+|---|---|
+| **Error capture** | Patches `window.onerror` and listens for `unhandledrejection` |
+| **Console capture** | Monkey-patches `console.error` / `console.warn` (always calls originals) |
+| **Network capture** | Patches `fetch` and `XMLHttpRequest` (only captures 4xx/5xx, never alters responses) |
+| **Click tracking** | Uses capture-phase click listener (catches clicks even with `stopPropagation`) |
+| **Interactions** | Listens for `input`, `scroll`, `resize` events as breadcrumbs |
+| **Performance** | Uses `PerformanceObserver` for long-task, paint, and layout-shift entries |
+| **Memory** | Samples `performance.memory` every 10s, flags high usage and rapid growth |
+| **Deduplication** | Identical errors increment a counter instead of creating duplicate reports |
+| **Rate limiting** | Token-bucket algorithm prevents floods from error loops |
+| **Ring buffer** | Fixed-capacity storage prevents memory leaks in long-running apps |
+| **Safe teardown** | `destroy()` restores all original APIs cleanly |
+
+---
 
 ## Development
 
 ```bash
-# Install dependencies
-npm install
-
-# Build (ESM + CJS + IIFE)
-npm run build
-
-# Run tests
-npm test
-
-# Watch mode
-npm run test:watch
-
-# Type check
-npm run typecheck
-
-# Lint
-npm run lint
+npm install          # Install dependencies
+npm run build        # Build (ESM + CJS + IIFE)
+npm test             # Run tests
+npm run test:watch   # Watch mode
+npm run typecheck    # TypeScript strict check
+npm run lint         # ESLint
 ```
+
+---
 
 ## License
 
-MIT
+MIT — do whatever you want.

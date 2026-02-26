@@ -734,8 +734,97 @@
     .step__code .syn-fn { color: #6ee7b7; }
 
     /* ── Live Demo ─────────────────────────────── */
+    /* Demo section — highlighted */
+    .demo-section {
+      position: relative;
+      padding: 120px 0;
+      overflow: hidden;
+    }
+    .demo-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(110,231,183,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(139,92,246,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    /* Animated border glow top & bottom */
+    .demo-section::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(110,231,183,0.4), rgba(139,92,246,0.3), rgba(110,231,183,0.4), transparent);
+      background-size: 200% 100%;
+      animation: borderGlow 4s ease-in-out infinite;
+    }
+    .demo-section__border-bottom {
+      position: absolute;
+      bottom: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(110,231,183,0.4), rgba(139,92,246,0.3), rgba(110,231,183,0.4), transparent);
+      background-size: 200% 100%;
+      animation: borderGlow 4s ease-in-out infinite reverse;
+      pointer-events: none;
+    }
+    @keyframes borderGlow {
+      0% { background-position: 0% 50%; opacity: 0.5; }
+      50% { background-position: 100% 50%; opacity: 1; }
+      100% { background-position: 0% 50%; opacity: 0.5; }
+    }
+
+    /* Side glow accents */
+    .demo-section__glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .demo-section__glow--left {
+      width: 400px; height: 400px;
+      background: #10b981;
+      top: 20%; left: -150px;
+      opacity: 0.06;
+      animation: hauntGlow 8s ease-in-out infinite alternate;
+    }
+    .demo-section__glow--right {
+      width: 350px; height: 350px;
+      background: #8b5cf6;
+      bottom: 10%; right: -120px;
+      opacity: 0.05;
+      animation: hauntGlow 10s ease-in-out infinite alternate-reverse;
+    }
+
+    /* LIVE badge */
+    .demo-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #f87171;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .demo-live-badge__dot {
+      width: 8px; height: 8px;
+      background: #f87171;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(248,113,113,0.6);
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(248,113,113,0.6); }
+      50% { opacity: 0.4; box-shadow: 0 0 3px rgba(248,113,113,0.3); }
+    }
+
     .demo {
-      margin-top: 56px;
+      margin-top: 48px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
@@ -743,6 +832,8 @@
       opacity: 0;
       transform: translateY(30px);
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 1;
     }
     .demo.visible { opacity: 1; transform: translateY(0); }
 
@@ -752,6 +843,7 @@
       background: #0c1018;
       border: 1px solid rgba(255,255,255,0.06);
       overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     }
     .demo-browser__bar {
       display: flex;
@@ -853,6 +945,7 @@
       border: 1px solid rgba(110,231,183,0.08);
       overflow: hidden;
       position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 30px rgba(110,231,183,0.03);
     }
     .demo-widget__header {
       display: flex; align-items: center;
@@ -1349,7 +1442,7 @@
       </a>
       <ul class="nav__links">
         <li><a href="#features">Features</a></li>
-        <li><a href="#code">Code</a></li>
+        <li><a href="#demo" style="color:#6ee7b7;">Live Demo</a></li>
         <li><a href="#how">How It Works</a></li>
         <li><a href="#compare">Compare</a></li>
         <li><a href="#quickstart">Quick Start</a></li>
@@ -1530,14 +1623,18 @@ ghostbug<span class="syn-punc">.</span><span class="syn-fn">toMarkdown</span><sp
     </div>
   </section>
 
-  <div class="divider"></div>
-
   <!-- Live Demo -->
-  <section id="demo">
-    <div class="container">
-      <div class="section__label">Live Demo</div>
-      <h2 class="section__title">Watch the ghost in action.</h2>
-      <p class="section__desc">See what happens when a bug occurs in your app. Hit play and watch ghostbug catch it.</p>
+  <section id="demo" class="demo-section">
+    <div class="demo-section__glow demo-section__glow--left"></div>
+    <div class="demo-section__glow demo-section__glow--right"></div>
+    <div class="demo-section__border-bottom"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <div class="demo-live-badge">
+        <span class="demo-live-badge__dot"></span>
+        Live Demo
+      </div>
+      <h2 class="section__title" style="font-size:clamp(32px,5vw,52px);">Watch the ghost in action.</h2>
+      <p class="section__desc" style="font-size:18px;">A bug occurs. ghostbug catches it &mdash; with full context, breadcrumb trail, and zero config. All in real-time.</p>
 
       <div class="demo" data-reveal>
         <!-- Left: Simulated Browser -->
@@ -1586,8 +1683,6 @@ ghostbug<span class="syn-punc">.</span><span class="syn-fn">toMarkdown</span><sp
       <div class="demo-status" id="demoStatus"></div>
     </div>
   </section>
-
-  <div class="divider"></div>
 
   <!-- How It Works -->
   <section id="how">
