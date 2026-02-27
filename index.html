@@ -4,7 +4,55 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ghostbug — Zero-config bug context collector for the browser</title>
-  <meta name="description" content="Auto-capture errors, network failures, console logs, performance metrics, and memory issues. Zero dependencies. ~7KB gzipped." />
+  <meta name="description" content="ghostbug is a zero-config, zero-dependency browser SDK that auto-captures JavaScript errors, network failures, console logs, performance metrics, memory leaks, and user click trails. ~7KB gzipped. Free and open source alternative to Sentry and LogRocket." />
+  <meta name="keywords" content="ghostbug, javascript error tracking, browser error monitoring, bug reporter, error capture SDK, console logger, network failure tracker, performance monitoring, memory leak detection, click tracking, breadcrumb trail, zero dependencies, lightweight, sentry alternative, logrocket alternative, open source, developer tools, QA tools, bug context collector, frontend debugging" />
+  <meta name="author" content="Sounak Das" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://littleboy9.github.io/ghostbug/" />
+
+  <!-- Open Graph / Facebook / LinkedIn / Slack -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://littleboy9.github.io/ghostbug/" />
+  <meta property="og:title" content="ghostbug — Zero-config bug context collector for the browser" />
+  <meta property="og:description" content="Auto-capture JS errors, network failures, console logs, performance bottlenecks, and memory leaks. Zero dependencies. ~7KB gzipped. Free and open source." />
+  <meta property="og:site_name" content="ghostbug" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ghostbug — Zero-config bug context collector" />
+  <meta name="twitter:description" content="Auto-capture JS errors, network failures, console logs, performance & memory issues. Zero deps. ~7KB. Free forever." />
+
+  <!-- Favicon (ghost emoji as SVG data URI) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F47B;</text></svg>" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ghostbug",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "description": "Zero-config, zero-dependency browser SDK that auto-captures JavaScript errors, network failures, console logs, performance metrics, memory leaks, and user click trails.",
+    "url": "https://littleboy9.github.io/ghostbug/",
+    "downloadUrl": "https://www.npmjs.com/package/ghostbug",
+    "softwareVersion": "0.2.0",
+    "author": {
+      "@type": "Person",
+      "name": "Sounak Das",
+      "url": "https://github.com/LittleBoy9"
+    },
+    "license": "https://opensource.org/licenses/MIT",
+    "codeRepository": "https://github.com/LittleBoy9/ghostbug",
+    "programmingLanguage": "TypeScript",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Creepster&display=swap" rel="stylesheet" />
@@ -1538,6 +1586,14 @@
   </style>
 </head>
 <body>
+
+  <noscript>
+    <div style="padding:40px;text-align:center;color:#fff;background:#08070d;font-family:sans-serif;">
+      <h1>ghostbug</h1>
+      <p>Zero-config bug context collector for the browser. Auto-captures errors, network failures, console logs, performance metrics, and memory leaks.</p>
+      <p><a href="https://www.npmjs.com/package/ghostbug" style="color:#6ee7b7;">Install from npm</a> | <a href="https://github.com/LittleBoy9/ghostbug" style="color:#6ee7b7;">View on GitHub</a></p>
+    </div>
+  </noscript>
 
   <!-- Background -->
   <div class="bg-grid"></div>
