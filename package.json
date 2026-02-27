@@ -1,6 +1,6 @@
 {
   "name": "ghostbug",
-  "version": "0.2.0-beta.0",
+  "version": "0.2.0",
   "description": "Zero-config automatic bug context collector SDK for the browser",
   "author": "Sounak Das",
   "license": "MIT",
